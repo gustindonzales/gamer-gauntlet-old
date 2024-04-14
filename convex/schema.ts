@@ -13,4 +13,10 @@ export default defineSchema({
     startDate: v.number(),
     endDate: v.number(),
   }),
+  users: defineTable({
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    tokenIdentifier: v.string(),
+  }).index('by_token', ['tokenIdentifier']),
 });
