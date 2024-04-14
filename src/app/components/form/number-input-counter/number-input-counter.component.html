@@ -1,0 +1,65 @@
+<div class="relative flex min-w-[8rem] max-w-[8rem] items-center">
+  <button
+    type="button"
+    id="decrement-button"
+    (click)="decrement()"
+    [disabled]="disabled || value <= min"
+    data-input-counter-decrement="quantity-input"
+    class="h-11 rounded-s-lg border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+  >
+    <svg
+      class="h-3 w-3 text-gray-900 dark:text-white"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 18 2"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M1 1h16"
+      />
+    </svg>
+  </button>
+  <input
+    type="text"
+    id="quantity-input"
+    data-input-counter
+    aria-describedby="helper-text-explanation"
+    class="block h-11 w-full border-x-0 border-gray-300 bg-gray-50 py-2.5 text-center text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+    placeholder="0"
+    [value]="value"
+    [min]="min"
+    [max]="max"
+    [step]="step"
+    readonly
+    [required]="required"
+    [disabled]="disabled"
+  />
+  <button
+    type="button"
+    id="increment-button"
+    (click)="increment()"
+    [disabled]="disabled || value >= max"
+    data-input-counter-increment="quantity-input"
+    class="h-11 rounded-e-lg border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+  >
+    <svg
+      class="h-3 w-3 text-gray-900 dark:text-white"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 18 18"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 1v16M1 9h16"
+      />
+    </svg>
+  </button>
+</div>

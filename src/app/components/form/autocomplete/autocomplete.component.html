@@ -1,0 +1,97 @@
+<div class="relative h-[5.5rem]">
+  <label [for]="id" class="block text-sm leading-6">{{
+    label + (isRequired ? " *" : "")
+  }}</label>
+  <div class="relative mt-2 rounded-md shadow-sm">
+    <div
+      *ngIf="prefix !== ''"
+      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+    >
+      <span class="text-gray-500 sm:text-sm">{{ prefix }}</span>
+    </div>
+    <input
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      [formControl]="control"
+      [type]="inputType"
+      [name]="name"
+      [id]="id"
+      [autocomplete]="autocomplete"
+      [ngClass]="{
+        primary: color === 'primary',
+        invalid: hasError,
+        'pl-7': prefix !== '',
+        'rounded-md': !showOptions,
+        'rounded-t-md': showOptions
+      }"
+      class="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+      [placeholder]="placeholder"
+      [readonly]="readonly"
+      [minlength]="minlength"
+      [maxlength]="maxlength"
+      [min]="min"
+      [max]="max"
+      (input)="onInput($event)"
+      role="combobox"
+      [attr.aria-owns]="id + 'options-list'"
+      [attr.aria-expanded]="showOptions"
+    />
+    <div
+      *ngIf="!isInputFromUser"
+      class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
+    >
+      <ng-icon
+        name="heroCheckCircleSolid"
+        class="text-green-500"
+        size="20"
+      ></ng-icon>
+    </div>
+  </div>
+
+  <ul
+    *ngIf="showOptions"
+    [id]="id + 'options-list'"
+    [ngClass]="{
+      'rounded-md': !showOptions,
+      'rounded-b-md': showOptions
+    }"
+    class="absolute z-50 max-h-60 w-full overflow-y-auto rounded-md border-2 bg-white text-dark shadow-sm"
+    role="listbox"
+  >
+    <li
+      *ngFor="let option of options; let i = index"
+      class="cursor-pointer border-b-2 p-2 hover:bg-dark-200"
+      (click)="selectOption(option)"
+      role="option"
+      [attr.aria-selected]="i === activeOptionIndex"
+    >
+      {{ option }}
+    </li>
+  </ul>
+
+  <span
+    *ngIf="hasError"
+    class="ml-1 mt-1 flex items-center text-xs font-medium tracking-wide text-red-500"
+  >
+    {{ errorMessage }}
+  </span>
+</div>
+
+<!-- <label for="price" class="block text-sm leading-6"
+                      >Power Bill</label
+                    >
+                    <div class="relative mt-2 rounded-md shadow-sm">
+                      <div
+                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+                      >
+                        <span class="text-gray-500 sm:text-sm">$</span>
+                      </div>
+                      <input
+                        formControlName="avgMonthlyPowerBill"
+                        type="number"
+                        name="power-bill"
+                        id="power-bill"
+                        class="block w-full rounded-md border-0 py-1.5 pl-7 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                        placeholder="What is your average monthly power bill?"
+                      />
+                    </div> -->

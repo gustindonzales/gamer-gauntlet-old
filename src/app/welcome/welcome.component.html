@@ -1,0 +1,16 @@
+<div class="prose max-w-none text-center dark:text-light">
+  <h1 class="dark:text-light">Welcome to Gamer Gauntlet</h1>
+  <p>Browse for a tournament to join, or create your own!</p>
+  <div class="flex gap-xxs justify-center">
+    <button type="button" [routerLink]="['/tournaments', 'browse']">
+      Browse Tournaments
+    </button>
+    <button
+      class="secondary"
+      type="button"
+      [routerLink]="['/tournaments', 'new']"
+    >
+      Create Tournament
+    </button>
+  </div>
+</div>

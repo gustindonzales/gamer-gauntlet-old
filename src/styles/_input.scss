@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type="radio"] {
+  @apply border-gray-300 text-slate-500 focus:ring-slate-500;
+
+  &.primary {
+    @apply border-gray-300 text-primary focus:ring-primary;
+  }
+}

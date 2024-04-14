@@ -1,0 +1,47 @@
+<div class="h-[5.5rem]">
+  <label [for]="id" class="block text-sm leading-6">{{
+    label + (isRequired ? " *" : "")
+  }}</label>
+  <div class="relative mt-2 rounded-md shadow-sm">
+    <div
+      *ngIf="prefix !== ''"
+      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+    >
+      <span class="text-gray-500 sm:text-sm">{{ prefix }}</span>
+    </div>
+    <select
+      [formControl]="control"
+      [name]="name"
+      [id]="id"
+      [autocomplete]="autocomplete"
+      [ngClass]="{
+        primary: color === 'primary',
+        invalid: hasError,
+        'pl-7': prefix !== '',
+        'text-gray-400': placeholder !== '' && !control.value
+      }"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+    >
+      <option
+        class="text-gray-400"
+        *ngIf="placeholder !== ''"
+        value=""
+        disabled
+        selected
+      >
+        {{ placeholder }}
+      </option>
+      <ng-container *ngFor="let option of options">
+        <option class="text-dark" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </ng-container>
+    </select>
+  </div>
+  <span
+    *ngIf="hasError"
+    class="ml-1 mt-1 flex items-center text-xs font-medium tracking-wide text-red-500"
+  >
+    {{ errorMessage }}
+  </span>
+</div>
