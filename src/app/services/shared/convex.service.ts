@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { ConvexClient } from 'convex/browser';
 import { Observable, from } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { mutation } from '../../../../convex/_generated/server';
-import { v } from 'convex/values';
-import { api } from '../../../../convex/_generated/api';
 
 @Injectable({
   providedIn: 'root',

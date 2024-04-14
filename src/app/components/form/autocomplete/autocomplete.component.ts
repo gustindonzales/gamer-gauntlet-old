@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   ReactiveFormsModule,
   ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { HtmlInputType } from '../input/input.component';
-import { heroCheckCircleSolid } from '@ng-icons/heroicons/solid';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroCheckCircleSolid } from '@ng-icons/heroicons/solid';
+import { HtmlInputType } from '../input/input.component';
 
 @Component({
   selector: 'app-autocomplete',

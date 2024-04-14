@@ -7,6 +7,5 @@ import { InputComponent } from '../../components/form';
 @NgModule({
   declarations: [],
   imports: [CommonModule, NewRoutingModule, InputComponent],
-  exports: [InputComponent],
 })
 export class NewModule {}

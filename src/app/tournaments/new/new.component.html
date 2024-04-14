@@ -15,7 +15,13 @@
       <app-select name="game" label="Game" placeholder="Game"></app-select>
     </div>
     <div>
-      <app-select name="type" label="Type" placeholder="Type"></app-select>
+      <app-select
+        name="type"
+        label="Type"
+        [options]="
+          (tournamentsFacadeService.tournamentTypeOptions$ | async) || []
+        "
+      ></app-select>
     </div>
     <div>
       <app-textarea
