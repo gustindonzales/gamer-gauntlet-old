@@ -5,7 +5,7 @@
   data-dropdown-toggle="userDropdown"
   data-dropdown-placement="bottom-start"
   class="w-10 h-10 rounded-full shadow-sm cursor-pointer"
-  [src]="(clerkService.user$ | async)?.imageUrl"
+  [src]="(convexService.user$ | async)?.imageUrl"
   alt="User dropdown"
 />
 
@@ -15,9 +15,9 @@
   class="z-10 absolute hidden right-6 mt-bl-2 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600"
 >
   <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-    <div>{{ (clerkService.user$ | async)?.fullName }}</div>
+    <div>{{ (convexService.user$ | async)?.fullName }}</div>
     <div class="font-medium truncate">
-      {{ (clerkService.user$ | async)?.primaryEmailAddress?.emailAddress }}
+      {{ (convexService.user$ | async)?.primaryEmailAddress?.emailAddress }}
     </div>
   </div>
   <ul
@@ -41,7 +41,7 @@
   </ul>
   <div class="py-1 cursor-pointer">
     <a
-      (click)="clerkService.signOut()"
+      (click)="convexService.signOut()"
       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
       >Sign out</a
     >

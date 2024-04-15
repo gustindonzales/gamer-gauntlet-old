@@ -5,12 +5,12 @@ import {
 } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
-import { routes } from './app.routes';
+import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { environment } from '../environments/environment';
-import { NgxsFormPluginModule } from '@ngxs/form-plugin';
-import { ClerkService } from './services/shared/clerk.service';
 import { initializeAppFactory } from './app.initializer';
+import { routes } from './app.routes';
+import { ConvexService } from './services/shared/convex.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
-      deps: [ClerkService],
+      deps: [ConvexService],
       multi: true,
     },
   ],

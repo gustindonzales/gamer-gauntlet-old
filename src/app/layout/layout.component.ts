@@ -1,7 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ClerkService } from '../services/shared/clerk.service';
-import { CommonModule } from '@angular/common';
+import { ConvexService } from '../services/shared/convex.service';
 import { AvatarComponent } from './components/avatar/avatar.component';
 
 @Component({
@@ -12,8 +12,8 @@ import { AvatarComponent } from './components/avatar/avatar.component';
   styleUrl: './layout.component.scss',
 })
 export class LayoutComponent {
-  protected clerkService: ClerkService = inject(ClerkService);
+  protected convexService: ConvexService = inject(ConvexService);
   presentSignIn(): void {
-    this.clerkService.openSignIn();
+    this.convexService.openSignIn();
   }
 }

@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
-import { Observable, of } from 'rxjs';
+import { GetTournamentTypes } from './tournaments.actions';
 import { TournamentsFacadeService } from './tournaments.facade.service';
 import { TournamentsState } from './tournaments.state';
-import { GetTournamentTypes } from './tournaments.actions';
 
 describe('TournamentsFacadeService', () => {
   let service: TournamentsFacadeService;

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { ClerkService } from '../../../services/shared/clerk.service';
 import { Router, RouterModule } from '@angular/router';
+import { ConvexService } from '../../../services/shared/convex.service';
 
 @Component({
   selector: 'app-avatar',
@@ -11,7 +11,7 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './avatar.component.scss',
 })
 export class AvatarComponent {
-  public clerkService: ClerkService = inject(ClerkService);
+  public convexService: ConvexService = inject(ConvexService);
   private router: Router = inject(Router);
   private dropdownElement: HTMLElement | null = null;
 

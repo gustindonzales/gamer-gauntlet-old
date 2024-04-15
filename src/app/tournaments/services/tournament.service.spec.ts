@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TournamentService } from './tournament.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
+import { api } from '../../../../convex/_generated/api';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { ConvexService } from '../../services/shared/convex.service';
-import { api } from '../../../../convex/_generated/api';
-import { v } from 'convex/values';
+import { TournamentService } from './tournament.service';
 
 describe('TournamentService', () => {
   let service: TournamentService;

@@ -1,8 +1,8 @@
 import { Observable, combineLatest } from 'rxjs';
-import { ClerkService } from './services/shared/clerk.service';
+import { ConvexService } from './services/shared/convex.service';
 
 export function initializeAppFactory(
-  clerkService: ClerkService,
+  convexService: ConvexService,
 ): () => Observable<[void]> {
-  return () => combineLatest([clerkService.initClerk()]);
+  return () => combineLatest([convexService.initClerk()]);
 }

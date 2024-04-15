@@ -21,6 +21,12 @@ export const storeUser = mutation({
     email: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    console.log(identity);
+    if (!identity) {
+      throw new Error('Called storeUser without authentication present');
+    }
+
     // Check if we've already stored this identity before.
     const user = await ctx.db
       .query('users')
@@ -31,24 +37,24 @@ export const storeUser = mutation({
     if (user !== null) {
       // If we've seen this identity before but the name has changed, patch the value.
       if (
-        user.firstName !== args.firstName ||
-        user.lastName !== args.lastName ||
-        user.email !== args.email
+        user.firstName !== identity.givenName ||
+        user.lastName !== identity.familyName ||
+        user.email !== identity.email
       ) {
         await ctx.db.patch(user._id, {
-          firstName: args.firstName!,
-          lastName: args.lastName!,
-          email: args.email,
+          firstName: identity.givenName!,
+          lastName: identity.familyName!,
+          email: identity.email!,
         });
       }
       return user._id;
     }
     // If it's a new identity, create a new `User`.
     return await ctx.db.insert('users', {
-      firstName: args.firstName!,
-      lastName: args.lastName!,
-      email: args.email!,
-      tokenIdentifier: args.tokenIdentifier,
+      firstName: identity.givenName!,
+      lastName: identity.familyName!,
+      email: identity.email!,
+      tokenIdentifier: identity.tokenIdentifier,
     });
   },
 });
