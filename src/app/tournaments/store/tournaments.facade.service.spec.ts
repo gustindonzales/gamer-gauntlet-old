@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
-import { GetTournamentTypes } from './tournaments.actions';
+import { Games, TournamentTypes } from './tournaments.actions';
 import { TournamentsFacadeService } from './tournaments.facade.service';
 import { TournamentsState } from './tournaments.state';
 
@@ -23,7 +23,13 @@ describe('TournamentsFacadeService', () => {
   it('should dispatch GetTournamentTypes action', () => {
     spyOn(store, 'dispatch');
     service.getTournamentTypes();
-    expect(store.dispatch).toHaveBeenCalledWith(new GetTournamentTypes(false));
+    expect(store.dispatch).toHaveBeenCalledWith(new TournamentTypes.Get(false));
+  });
+
+  it('should dispatch GetGames action', () => {
+    spyOn(store, 'dispatch');
+    service.getGames();
+    expect(store.dispatch).toHaveBeenCalledWith(new Games.Get(false));
   });
 
   // it('should dispatch CreateTournament action', () => {

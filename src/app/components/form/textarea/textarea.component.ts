@@ -23,6 +23,7 @@ export class TextareaComponent {
   @Input() prefix: string = '';
   @Input() minlength: string | number | null = null;
   @Input() maxlength: string | number | null = null;
+  @Input() rows: string | number = 3;
 
   get hasError(): boolean {
     return this.control.invalid && this.control.touched;

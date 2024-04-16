@@ -53,6 +53,7 @@ describe('TournamentService', () => {
       });
       expect(convexService.get).toHaveBeenCalledWith(
         api['tournamentTypes'].get,
+        {},
         true,
       );
     });

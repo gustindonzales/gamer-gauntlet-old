@@ -26,10 +26,31 @@ export class TournamentService {
   getTournamentTypes(
     listen: boolean = false,
   ): Observable<Doc<'tournamentTypes'>[]> {
-    return this.convexService.get(api['tournamentTypes'].get, listen);
+    return this.convexService.get(api['tournamentTypes'].get, {}, listen);
   }
 
-  // createTournament(tournament: Doc<'tournaments'>): Observable<Doc<'tournaments'>> {
-  //   return this.convexService.insert(api['tournaments'].insert, tournament);
-  // }
+  getGames(listen: boolean = false): Observable<Doc<'games'>[]> {
+    return this.convexService.get(api['games'].get, {}, listen);
+  }
+
+  getPlatforms(listen: boolean = false): Observable<Doc<'platforms'>[]> {
+    return this.convexService.get(api['platforms'].get, {}, listen);
+  }
+
+  getPlatformsByGameId(
+    gameId: string,
+    listen: boolean = false,
+  ): Observable<Doc<'platforms'>[]> {
+    return this.convexService.get(
+      api['platforms'].getPlatformsByGameId,
+      { gameId },
+      listen,
+    );
+  }
+
+  createTournament(
+    tournament: Doc<'tournaments'>,
+  ): Observable<Doc<'tournaments'>> {
+    return this.convexService.insert(api['tournaments'].create, tournament);
+  }
 }

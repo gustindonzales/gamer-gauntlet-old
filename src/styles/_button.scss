@@ -5,19 +5,20 @@
 button[type="submit"],
 button[type="button"],
 button[type="reset"] {
-  @apply rounded-full bg-slate-500 px-6 py-3 text-sm font-semibold uppercase text-white shadow-sm 
-    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600 
-    enabled:hover:bg-slate-600 disabled:cursor-not-allowed disabled:bg-slate-400;
+  @apply rounded-full;
+  // @apply rounded-full bg-slate-500 px-6 py-3 text-sm font-semibold uppercase text-white shadow-sm
+  //   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600
+  //   enabled:hover:bg-slate-600 disabled:cursor-not-allowed disabled:bg-slate-400;
 
-  &.primary {
-    @apply bg-primary focus-visible:outline-primary-600 enabled:hover:bg-primary-600 disabled:bg-primary-400;
-  }
+  // &.primary {
+  //   @apply bg-primary focus-visible:outline-primary-600 enabled:hover:bg-primary-600 disabled:bg-primary-400;
+  // }
 
-  &.secondary {
-    @apply bg-secondary focus-visible:outline-secondary-600 enabled:hover:bg-secondary-600 disabled:bg-secondary-400;
-  }
+  // &.secondary {
+  //   @apply bg-secondary focus-visible:outline-secondary-600 enabled:hover:bg-secondary-600 disabled:bg-secondary-400;
+  // }
 
-  &.tertiary {
-    @apply bg-tertiary focus-visible:outline-tertiary-600 enabled:hover:bg-tertiary-600 disabled:bg-tertiary-400;
-  }
+  // &.tertiary {
+  //   @apply bg-tertiary focus-visible:outline-tertiary-600 enabled:hover:bg-tertiary-600 disabled:bg-tertiary-400;
+  // }
 }

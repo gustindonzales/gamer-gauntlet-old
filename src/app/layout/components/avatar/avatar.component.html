@@ -1,4 +1,4 @@
-<img
+<!-- <img
   (click)="toggleDropdown()"
   id="avatarButton"
   type="button"
@@ -8,8 +8,6 @@
   [src]="(convexService.user$ | async)?.imageUrl"
   alt="User dropdown"
 />
-
-<!-- Dropdown menu -->
 <div
   id="userDropdown"
   class="z-10 absolute hidden right-6 mt-bl-2 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600"
@@ -46,4 +44,36 @@
       >Sign out</a
     >
   </div>
-</div>
+</div> -->
+
+<img
+  [matMenuTriggerFor]="menu"
+  id="avatarButton"
+  type="button"
+  data-dropdown-toggle="userDropdown"
+  data-dropdown-placement="bottom-start"
+  class="w-10 h-10 rounded-full cursor-pointer"
+  [src]="(convexService.user$ | async)?.imageUrl"
+  alt="User dropdown"
+/>
+<!-- <button
+  mat-icon-button
+  [matMenuTriggerFor]="menu"
+  aria-label="Example icon-button with a menu"
+>
+  <mat-icon>more_vert</mat-icon>
+</button> -->
+<mat-menu #menu="matMenu">
+  <button mat-menu-item [routerLink]="['/dashboard']">
+    <mat-icon>dashboard</mat-icon>
+    <span>Dashboard</span>
+  </button>
+  <button mat-menu-item [routerLink]="['/settings']">
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+  <button mat-menu-item (click)="convexService.signOut()">
+    <mat-icon>logout</mat-icon>
+    <span>Sign Out</span>
+  </button>
+</mat-menu>

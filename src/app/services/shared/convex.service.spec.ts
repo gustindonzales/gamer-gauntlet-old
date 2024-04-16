@@ -44,7 +44,7 @@ describe('ConvexService', () => {
 
   it('should call client.onUpdate when listen is true', () => {
     const func = api['tournamentTypes'].get;
-    service.get(func, true).subscribe((result) => {
+    service.get(func, {}, true).subscribe((result) => {
       expect(result).toEqual(tournamentTypesResponse);
     });
     expect(service.client.onUpdate).toHaveBeenCalled();
@@ -52,7 +52,7 @@ describe('ConvexService', () => {
 
   it('should call client.query when listen is false', () => {
     const func = api['tournamentTypes'].get;
-    service.get(func, false).subscribe((result) => {
+    service.get(func, {}, false).subscribe((result) => {
       expect(result).toEqual(tournamentTypesResponse);
     });
     expect(service.client.query).toHaveBeenCalled();

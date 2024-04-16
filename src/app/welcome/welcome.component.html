@@ -1,12 +1,18 @@
-<div class="prose max-w-none text-center dark:text-light">
-  <h1 class="dark:text-light">Welcome to Gamer Gauntlet</h1>
+<div class="max-w-none text-center">
+  <h1>Welcome to Gamer Gauntlet</h1>
   <p>Browse for a tournament to join, or create your own!</p>
   <div class="flex gap-xxs justify-center">
-    <button type="button" [routerLink]="['/tournaments', 'browse']">
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      [routerLink]="['/tournaments', 'browse']"
+    >
       Browse Tournaments
     </button>
     <button
-      class="secondary"
+      mat-flat-button
+      color="accent"
       type="button"
       [routerLink]="['/tournaments', 'new']"
     >

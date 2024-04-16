@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ConvexClient } from 'convex/browser';
 import {
   BehaviorSubject,
@@ -13,12 +13,14 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { api } from '../../../../convex/_generated/api';
 import Clerk from '@clerk/clerk-js';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConvexService {
   protected client = new ConvexClient(environment.CONVEX_URL);
+  private router: Router = inject(Router);
   private clerk: Clerk;
   public isAuthenticated$ = new BehaviorSubject<boolean>(false);
   public isReady$ = new BehaviorSubject<boolean>(false);
@@ -28,16 +30,16 @@ export class ConvexService {
     this.clerk = new Clerk(environment.CLERK_PUBLISHABLE_KEY);
   }
 
-  get<T>(func: any, listen: boolean = false): Observable<T> {
+  get<T>(func: any, args: any = {}, listen: boolean = false): Observable<T> {
     if (listen) {
       return new Observable((observer) => {
-        this.client.onUpdate(func, {}, (messages) => {
+        this.client.onUpdate(func, args, (messages) => {
           observer.next(messages);
         });
       });
     }
 
-    return from(this.client.query(func, {}));
+    return from(this.client.query(func, args));
   }
 
   insert<T>(func: any, args: T): Observable<T> {
@@ -104,6 +106,7 @@ export class ConvexService {
     from(this.clerk.signOut())
       .pipe(take(1))
       .subscribe(() => {
+        this.router.navigate(['/']);
         this.isAuthenticated$.next(false);
         this.user$.next(null);
       });
