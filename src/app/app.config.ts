@@ -11,13 +11,13 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
-import { provideNgxStripe } from 'ngx-stripe';
 import { environment } from '../environments/environment';
 import { initializeAppFactory } from './app.initializer';
 import { routes } from './app.routes';
 import { ConvexService } from './services/shared/convex.service';
 import { TournamentsFacadeService } from './tournaments/store/tournaments.facade.service';
 import { TournamentsState } from './tournaments/store/tournaments.state';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,11 +42,11 @@ export const appConfig: ApplicationConfig = {
       deps: [ConvexService, TournamentsFacadeService],
       multi: true,
     },
-    provideNgxStripe(environment.STRIPE_PUBLISHABLE_KEY),
     provideAnimationsAsync(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    provideNativeDateAdapter(),
   ],
 };

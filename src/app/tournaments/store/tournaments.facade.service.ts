@@ -3,8 +3,15 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { SelectOption } from '../../components/form';
-import { Games, Platforms, TournamentTypes } from './tournaments.actions';
+import {
+  Games,
+  Platforms,
+  TournamentFormats,
+  TournamentTypes,
+  Tournaments,
+} from './tournaments.actions';
 import { TournamentsState } from './tournaments.state';
+import { CreateTournamentRequest } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +25,14 @@ export class TournamentsFacadeService {
   >;
   @Select(TournamentsState.getTournamentTypeOptions)
   tournamentTypeOptions$!: Observable<SelectOption[]>;
+
+  @Select(TournamentsState.getTournamentFormats)
+  tournamentFormats$!: Observable<Doc<'tournamentFormats'>[]>;
+  @Select(TournamentsState.getTournamentFormatOptions)
+  tournamentFormatOptions$!: Observable<SelectOption[]>;
+
+  @Select(TournamentsState.getSelectedTournament)
+  selectedTournament$!: Observable<any>; // Observable<Doc<'tournaments'>>;
 
   @Select(TournamentsState.getGames) games$!: Observable<Doc<'games'>[]>;
   @Select(TournamentsState.getGameOptions)
@@ -34,6 +49,14 @@ export class TournamentsFacadeService {
     this.store.dispatch(new TournamentTypes.Get(listen));
   }
 
+  getTournamentFormats(listen: boolean = false) {
+    this.store.dispatch(new TournamentFormats.Get(listen));
+  }
+
+  getSelectedTournament(tournamentId: string, listen: boolean = false) {
+    this.store.dispatch(new Tournaments.Get(tournamentId, listen));
+  }
+
   getGames(listen: boolean = false) {
     this.store.dispatch(new Games.Get(listen));
   }
@@ -42,7 +65,7 @@ export class TournamentsFacadeService {
     this.store.dispatch(new Platforms.Get(listen));
   }
 
-  // createTournament(tournament: Doc<'tournaments'>) {
-  //   this.store.dispatch(new CreateTournament(tournament));
-  // }
+  createTournament(tournament: CreateTournamentRequest) {
+    this.store.dispatch(new Tournaments.Create(tournament));
+  }
 }

@@ -1,5 +1,6 @@
 import { v } from 'convex/values';
-import { mutation } from './_generated/server';
+import { Doc } from './_generated/dataModel';
+import { mutation, query } from './_generated/server';
 
 /**
  * Insert or update the user in a Convex table then return the document's ID.
@@ -13,16 +14,47 @@ import { mutation } from './_generated/server';
  * which of those need to be persisted. For Clerk the fields are determined
  * by the JWT token's Claims config.
  */
+
+export const basicUserDetails = (user: Doc<'users'>) => {
+  return {
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+  };
+};
+
+export const getUser = query({
+  args: { userId: v.id('users') },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  },
+});
+
+export const getUserByTokenIdentifier = query({
+  args: { clerkId: v.string() },
+  handler: async (ctx, args) => {
+    const users = await ctx.db
+      .query('users')
+      .filter((q) => q.eq(q.field('clerkId'), args.clerkId))
+      .order('desc')
+      .take(1);
+    if (users.length === 0) {
+      return null;
+    }
+    return users[0];
+  },
+});
+
 export const storeUser = mutation({
   args: {
-    tokenIdentifier: v.string(),
+    clerkId: v.string(),
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    console.log(identity);
+
     if (!identity) {
       throw new Error('Called storeUser without authentication present');
     }
@@ -30,10 +62,9 @@ export const storeUser = mutation({
     // Check if we've already stored this identity before.
     const user = await ctx.db
       .query('users')
-      .withIndex('by_token', (q) =>
-        q.eq('tokenIdentifier', args.tokenIdentifier),
-      )
+      .withIndex('by_token', (q) => q.eq('clerkId', identity.subject))
       .unique();
+
     if (user !== null) {
       // If we've seen this identity before but the name has changed, patch the value.
       if (
@@ -54,7 +85,7 @@ export const storeUser = mutation({
       firstName: identity.givenName!,
       lastName: identity.familyName!,
       email: identity.email!,
-      tokenIdentifier: identity.tokenIdentifier,
+      clerkId: identity.subject,
     });
   },
 });

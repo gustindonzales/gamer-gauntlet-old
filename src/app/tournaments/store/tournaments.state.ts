@@ -9,6 +9,7 @@ import {
   Games,
   Platforms,
   TournamentTypes,
+  TournamentFormats,
   Tournaments,
 } from './tournaments.actions';
 
@@ -20,6 +21,7 @@ export interface TournamentsStateModel {
     errors: any;
   };
   tournamentTypes: Doc<'tournamentTypes'>[] | null;
+  tournamentFormats: Doc<'tournamentFormats'>[] | null;
   games: Doc<'games'>[] | null;
   platforms: Doc<'platforms'>[] | null;
   selectedTournament: Doc<'tournaments'> | null;
@@ -35,6 +37,7 @@ export interface TournamentsStateModel {
       errors: {},
     },
     tournamentTypes: null,
+    tournamentFormats: null,
     games: null,
     platforms: null,
     selectedTournament: null,
@@ -55,6 +58,22 @@ export class TournamentsState {
     return state.tournamentTypes?.map(
       (type) => <SelectOption>{ value: type._id, label: type.name },
     );
+  }
+
+  static getTournamentFormats(state: TournamentsStateModel) {
+    return state.tournamentFormats;
+  }
+
+  @Selector()
+  static getTournamentFormatOptions(state: TournamentsStateModel) {
+    return state.tournamentFormats?.map(
+      (type) => <SelectOption>{ value: type._id, label: type.name },
+    );
+  }
+
+  @Selector()
+  static getSelectedTournament(state: TournamentsStateModel) {
+    return state.selectedTournament;
   }
 
   @Selector()
@@ -91,6 +110,23 @@ export class TournamentsState {
       tap((result: Doc<'tournamentTypes'>[]) => {
         patchState({
           tournamentTypes: result,
+        });
+      }),
+      catchError((err) => {
+        return throwError(() => new Error(err));
+      }),
+    );
+  }
+
+  @Action(TournamentFormats.Get)
+  getTournamentFormats(
+    { patchState }: StateContext<TournamentsStateModel>,
+    { listen }: TournamentFormats.Get,
+  ) {
+    return this.tournamentService.getTournamentFormats(listen).pipe(
+      tap((result: Doc<'tournamentFormats'>[]) => {
+        patchState({
+          tournamentFormats: result,
         });
       }),
       catchError((err) => {
@@ -140,8 +176,8 @@ export class TournamentsState {
   ) {
     return this.tournamentService.createTournament(tournament).pipe(
       take(1),
-      tap((tournament: Doc<'tournaments'>) => {
-        dispatch(new Tournaments.CreateSuccess(tournament));
+      tap((tournamentId) => {
+        dispatch(new Tournaments.CreateSuccess(tournamentId));
       }),
       catchError((err) => {
         return throwError(() => new Error(err));
@@ -152,10 +188,33 @@ export class TournamentsState {
   @Action(Tournaments.CreateSuccess)
   createTournamentSuccess(
     { patchState }: StateContext<TournamentsStateModel>,
-    { tournament }: Tournaments.CreateSuccess,
+    { tournamentId }: Tournaments.CreateSuccess,
   ) {
-    patchState({
-      selectedTournament: tournament,
-    });
+    return this.tournamentService.getTournament(tournamentId, false).pipe(
+      take(1),
+      tap((selectedTournament) => {
+        patchState({
+          selectedTournament,
+        });
+      }),
+      catchError((err) => {
+        return throwError(() => new Error(err));
+      }),
+    );
+  }
+
+  @Action(Tournaments.Get)
+  getTournament(
+    { patchState }: StateContext<TournamentsStateModel>,
+    { tournamentId, listen }: Tournaments.Get,
+  ) {
+    return this.tournamentService.getTournament(tournamentId, listen).pipe(
+      tap((selectedTournament) => {
+        patchState({ selectedTournament });
+      }),
+      catchError((err) => {
+        return throwError(() => new Error(err));
+      }),
+    );
   }
 }

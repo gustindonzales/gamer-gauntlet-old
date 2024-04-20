@@ -1,4 +1,7 @@
 import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import Clerk from '@clerk/clerk-js';
+import { UserResource } from '@clerk/types';
 import { ConvexClient } from 'convex/browser';
 import {
   BehaviorSubject,
@@ -10,10 +13,13 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
 import { api } from '../../../../convex/_generated/api';
-import Clerk from '@clerk/clerk-js';
-import { Router } from '@angular/router';
+import { Doc } from '../../../../convex/_generated/dataModel';
+import { environment } from '../../../environments/environment.development';
+
+export interface UserContext extends Doc<'users'> {
+  clerk: UserResource;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +30,7 @@ export class ConvexService {
   private clerk: Clerk;
   public isAuthenticated$ = new BehaviorSubject<boolean>(false);
   public isReady$ = new BehaviorSubject<boolean>(false);
-  public user$ = new BehaviorSubject<any>(null);
+  public user$ = new BehaviorSubject<UserContext | null>(null);
   private template: string = 'convex';
   constructor() {
     this.clerk = new Clerk(environment.CLERK_PUBLISHABLE_KEY);
@@ -42,8 +48,12 @@ export class ConvexService {
     return from(this.client.query(func, args));
   }
 
-  insert<T>(func: any, args: T): Observable<T> {
+  insert<T, T2>(func: any, args: T): Observable<T2> {
     return from(this.client.mutation(func, args));
+  }
+
+  action<T, T2>(func: any, args: T): Observable<T2> {
+    return from(this.client.action(func, args));
   }
 
   getToken() {
@@ -71,27 +81,47 @@ export class ConvexService {
       }),
 
       map(() => {
-        console.log(this.client.client.hasAuth());
-        this.isAuthenticated$.next(this.clerk.session !== null);
-        this.isReady$.next(true);
-        this.user$.next(this.clerk.session?.user);
-
         return {
-          tokenIdentifier: this.clerk.session?.user.id,
+          clerkId: this.clerk.session?.user.id,
           email: this.clerk.session?.user.emailAddresses[0].emailAddress,
           firstName: this.clerk.session?.user.firstName,
           lastName: this.clerk.session?.user.lastName,
         };
       }),
       switchMap((user) => {
-        if (!user.tokenIdentifier) {
+        if (!user.clerkId) {
           return of();
         }
         return this.insert(api['users'].storeUser, user).pipe(
+          take(1),
           map(() => {
             return;
           }),
         );
+      }),
+      switchMap(() =>
+        this.clerk.session?.user.id
+          ? (this.get(
+              api['users'].getUserByTokenIdentifier,
+              { clerkId: this.clerk.session?.user.id },
+              false,
+            ) as Observable<Doc<'users'>>)
+          : of(null),
+      ),
+      map((user) => {
+        this.isReady$.next(true);
+        this.isAuthenticated$.next(this.clerk.session !== null);
+        if (!user) {
+          return null;
+        }
+
+        const userContext = {
+          ...user,
+          clerk: this.clerk.session!.user,
+        };
+
+        this.user$.next(userContext);
+        return userContext;
       }),
     );
   }

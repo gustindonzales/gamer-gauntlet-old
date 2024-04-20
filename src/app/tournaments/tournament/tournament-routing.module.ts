@@ -6,6 +6,23 @@ const routes: Routes = [
   {
     path: '',
     component: TournamentComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'view',
+        pathMatch: 'full',
+      },
+      {
+        path: 'admin',
+        loadChildren: () =>
+          import('./admin/admin.module').then((m) => m.AdminModule),
+      },
+      {
+        path: 'view',
+        loadChildren: () =>
+          import('./view/view.module').then((m) => m.ViewModule),
+      },
+    ],
   },
 ];
 

@@ -1,84 +1,319 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>New Tournament</mat-card-title>
-    <mat-card-subtitle></mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <form
-      class="grid grid-cols-2 gap-xxs"
-      [formGroup]="form"
-      (ngSubmit)="submit()"
-    >
-      <div class="col-span-2 lg:col-span-1">
-        <mat-form-field class="w-full">
-          <mat-label>Name</mat-label>
-          <input
-            matInput
-            placeholder="Tournament Name"
-            value=""
-            formControlName="name"
-          />
-        </mat-form-field>
-      </div>
-      <div class="col-span-2 lg:col-span-1">
-        <mat-form-field class="w-full">
-          <mat-label>Type</mat-label>
-          <mat-select formControlName="type">
-            @for (
-              type of tournamentsFacadeService.tournamentTypeOptions$ | async;
-              track type
-            ) {
-              <mat-option [value]="type.value">{{ type.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col-span-2">
-        <mat-form-field class="w-full">
-          <mat-label>Description</mat-label>
-          <textarea
-            matInput
-            placeholder="Tournament Description"
-            formControlName="description"
-          ></textarea>
-        </mat-form-field>
-      </div>
-      <div class="col-span-2 lg:col-span-1">
-        <mat-form-field class="w-full">
-          <mat-label>Game</mat-label>
-          <mat-select
-            formControlName="game"
-            (selectionChange)="onGameChange($event.value)"
-          >
-            @for (
-              game of tournamentsFacadeService.gameOptions$ | async;
-              track game
-            ) {
-              <mat-option [value]="game.value">{{ game.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col-span-2 lg:col-span-1">
-        <mat-form-field class="w-full">
-          <mat-label>Platforms</mat-label>
-          <mat-select
-            formControlName="platforms"
-            multiple
-            [disabled]="gamePlatformsOptions().length === 0"
-          >
-            @for (platform of gamePlatformsOptions(); track platform) {
-              <mat-option [value]="platform.value">{{
-                platform.label
-              }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
+<form
+  mat-card
+  [formGroup]="form"
+  ngxsForm="tournaments.newTournamentForm"
+  (ngSubmit)="submit()"
+>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>New Tournament</mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="grid grid-cols-12 gap-xxs mt-xxs">
+        <h3 class="col-span-full">Tournament Details</h3>
 
-      <button class="col-span-2" mat-flat-button color="primary" type="submit">
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              placeholder="Tournament Name"
+              value=""
+              formControlName="name"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type">
+              @for (
+                type of tournamentsFacadeService.tournamentTypeOptions$ | async;
+                track type
+              ) {
+                <mat-option [value]="type.value">{{ type.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Format</mat-label>
+            <mat-select
+              formControlName="format"
+              (selectionChange)="onTournamentFormatChange($event.value)"
+            >
+              @for (
+                type of tournamentsFacadeService.tournamentFormatOptions$
+                  | async;
+                track type
+              ) {
+                <mat-option [value]="type.value">{{ type.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        @if (formatCodeSignal() === "team") {
+          <div class="col-span-full md:col-span-6 xl:col-span-3">
+            <mat-form-field class="w-full">
+              <mat-label>Team Size</mat-label>
+              <input
+                matInput
+                placeholder="Number of players per team"
+                value=""
+                formControlName="teamSize"
+                type="number"
+                pattern="\d*"
+                max="256"
+                min="2"
+              />
+            </mat-form-field>
+          </div>
+        }
+
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label
+              >Max
+              {{
+                formatCodeSignal() === "team" ? "Teams" : "Players"
+              }}</mat-label
+            >
+            <input
+              matInput
+              placeholder="Maximum entries allowed in the tournament"
+              value=""
+              formControlName="maxEntries"
+              type="number"
+              pattern="\d*"
+              max="256"
+              min="2"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label
+              >Min
+              {{
+                formatCodeSignal() === "team" ? "Teams" : "Players"
+              }}</mat-label
+            >
+            <input
+              matInput
+              placeholder="Minimum entries needed to start the tournament"
+              value=""
+              formControlName="minEntries"
+              type="number"
+              pattern="\d*"
+              [max]="form.get('maxEntries')?.value || 256"
+              min="2"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="datePicker"
+              formControlName="startDate"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="datePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Start Time</mat-label>
+            <input
+              matInput
+              [ngxMatTimepicker]="timePicker"
+              color="primary"
+              formControlName="startTime"
+            />
+
+            <ngx-mat-timepicker #timePicker></ngx-mat-timepicker>
+          </mat-form-field>
+        </div>
+
+        <h3 class="col-span-full">Tournament Description</h3>
+        <div class="col-span-full 2xl:col-span-6">
+          <ckeditor
+            [editor]="Editor"
+            (change)="onDescriptionChange($event)"
+            class="h-48"
+          ></ckeditor>
+
+          <!-- <mat-form-field class="w-full">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              placeholder="Tournament Description"
+              formControlName="description"
+              rows="6"
+            ></textarea>
+          </mat-form-field> -->
+        </div>
+
+        <h3 class="col-span-full">Game Details</h3>
+
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Game</mat-label>
+            <mat-select
+              formControlName="game"
+              (selectionChange)="onGameChange($event.value)"
+            >
+              @for (
+                game of tournamentsFacadeService.gameOptions$ | async;
+                track game
+              ) {
+                <mat-option [value]="game.value">{{ game.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Platforms</mat-label>
+            <mat-select formControlName="platforms" multiple>
+              @for (platform of gamePlatformsOptions(); track platform) {
+                <mat-option [value]="platform.value">{{
+                  platform.label
+                }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <h3 class="col-span-full">Payment Details</h3>
+
+        <mat-accordion class="col-span-full">
+          <mat-expansion-panel
+            class="mat-elevation-z0 remove-mat-expansion-panel-padding"
+            (opened)="onPaidTournamentExpansionToggle(true)"
+            (closed)="onPaidTournamentExpansionToggle(false)"
+            hideToggle
+            [formGroup]="feeDetails"
+          >
+            <mat-expansion-panel-header>
+              <mat-slide-toggle
+                formControlName="paidTournament"
+                (change)="onPaidTournamentChange($event.checked)"
+                >Paid Tournament</mat-slide-toggle
+              >
+            </mat-expansion-panel-header>
+
+            <div class="grid grid-cols-12 gap-xxs">
+              <div class="col-span-full md:col-span-6 xl:col-span-3">
+                <mat-form-field floatLabel="always" class="w-full">
+                  <mat-label>Entry Fee</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    class="example-right-align"
+                    placeholder="0"
+                    formControlName="entryFee"
+                  />
+                  <span matTextPrefix class="pr-bl-1">$</span>
+                </mat-form-field>
+              </div>
+              <div class="col-span-full">
+                <mat-label>Fee Distribution</mat-label>
+                <mat-radio-group
+                  class="flex flex-col md:flex-row my-bl-2 items-start"
+                  formControlName="feeDistributionType"
+                  (change)="onFeeDistributionTypeChange($event.value)"
+                >
+                  <mat-radio-button class="m-bl-1" value="winnerTakesAll"
+                    >Winner Takes All</mat-radio-button
+                  >
+                  <mat-radio-button class="m-bl-1" value="customDistribution"
+                    >Custom Distribution</mat-radio-button
+                  >
+                </mat-radio-group>
+              </div>
+              <div
+                *ngIf="
+                  feeDetails.get('feeDistributionType')?.value ===
+                  feeDistributionType.customDistribution
+                "
+                class="col-span-full"
+              >
+                <div
+                  formArrayName="customDistribution"
+                  class="grid grid-cols-12 gap-xxs"
+                >
+                  @for (
+                    rankControl of customDistribution.controls;
+                    track rankControl
+                  ) {
+                    <div class="col-span-full md:col-span-6 xl:col-span-3">
+                      <mat-form-field class="w-full" appearance="fill">
+                        <mat-label
+                          >{{ $index + 1 | ordinal }} Place (%)</mat-label
+                        >
+                        <input
+                          matInput
+                          type="number"
+                          [formControlName]="$index"
+                        />
+                      </mat-form-field>
+                    </div>
+                  }
+                </div>
+                <button
+                  type="button"
+                  [disabled]="customDistribution.controls.length <= 2"
+                  mat-icon-button
+                  aria-label="Remove custom distribution place"
+                  (click)="removeCustomDistributionPlace()"
+                >
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  [disabled]="
+                    customDistribution.controls.length >=
+                    form.get('minEntries')?.value
+                  "
+                  mat-icon-button
+                  aria-label="Add custom distribution place"
+                  (click)="addCustomDistributionPlace()"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+                @if (
+                  customDistribution.touched &&
+                  customDistribution.hasError("sumError")
+                ) {
+                  <mat-error>{{
+                    getControlValidatorErrorMessage(
+                      customDistribution,
+                      "sumError"
+                    )
+                  }}</mat-error>
+                }
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <div class="col-span-full"></div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-button color="primary" type="submit">
         Create Tournament
       </button>
-    </form>
-  </mat-card-content>
-</mat-card>
+    </mat-card-actions>
+  </mat-card>
+</form>
