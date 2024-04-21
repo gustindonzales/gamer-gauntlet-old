@@ -380,6 +380,7 @@ export class NewComponent {
       .createTournament(body)
       .pipe(take(1))
       .subscribe((tournament) => {
+        this.form.reset();
         this.router.navigate(['/tournaments', tournament._id, 'admin']);
       });
   }
