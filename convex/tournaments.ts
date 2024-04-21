@@ -3,6 +3,17 @@ import { mutation, query } from './_generated/server';
 import { basicUserDetails } from './users';
 import { Doc } from './_generated/dataModel';
 
+export interface Tournament extends Doc<'tournaments'> {
+  typeId: never;
+  gameId: never;
+  ownerId: never;
+
+  game: Doc<'games'>;
+  type: Doc<'tournamentTypes'>;
+  owner: Doc<'users'>;
+  platforms: Doc<'platforms'>[];
+}
+
 export const getById = query({
   args: { tournamentId: v.id('tournaments') },
   handler: async (ctx, args) => {
@@ -28,7 +39,7 @@ export const getById = query({
     delete tournament.gameId;
     delete tournament.typeId;
     delete tournament.ownerId;
-    return tournament;
+    return tournament as Tournament;
   },
 });
 

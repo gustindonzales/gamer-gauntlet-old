@@ -2,8 +2,9 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { api } from '../../../../convex/_generated/api.js';
 import { Doc } from '../../../../convex/_generated/dataModel';
-import { ConvexService } from '../../services/shared/convex.service';
+import { ConvexService } from '../../shared/services/convex.service.js';
 import { CreateTournamentRequest } from '../models/tournament.js';
+import { Tournament } from '../../../../convex/tournaments.js';
 
 export interface TournamentPost {
   name: string;
@@ -26,13 +27,13 @@ export class TournamentService {
 
   getTournamentTypes(
     listen: boolean = false,
-  ): Observable<Doc<'tournamentTypes'>[]> {
+  ): Observable<Doc<'tournamentTypes'>[] | null> {
     return this.convexService.get(api['tournamentTypes'].get, {}, listen);
   }
 
   getTournamentFormats(
     listen: boolean = false,
-  ): Observable<Doc<'tournamentFormats'>[]> {
+  ): Observable<Doc<'tournamentFormats'>[] | null> {
     return this.convexService.get(api['tournamentFormats'].get, {}, listen);
   }
 
@@ -47,7 +48,7 @@ export class TournamentService {
   getTournament(
     tournamentId: string,
     listen: boolean = false,
-  ): Observable<Doc<'tournaments'>> {
+  ): Observable<Tournament> {
     return this.convexService.get(
       api['tournaments'].getById,
       { tournamentId },

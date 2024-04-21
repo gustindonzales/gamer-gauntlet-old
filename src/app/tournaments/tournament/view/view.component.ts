@@ -7,7 +7,7 @@ import { TournamentsFacadeService } from '../../store/tournaments.facade.service
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { Doc } from '../../../../../convex/_generated/dataModel';
-import { ConvexService } from '../../../services/shared/convex.service';
+import { ConvexService } from '../../../shared/services/convex.service';
 import { combineLatest, map, take } from 'rxjs';
 
 @Component({

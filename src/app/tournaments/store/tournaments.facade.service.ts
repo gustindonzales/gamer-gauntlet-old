@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { SelectOption } from '../../components/form';
+import { CreateTournamentRequest } from '../models';
 import {
   Games,
   Platforms,
@@ -11,7 +12,6 @@ import {
   Tournaments,
 } from './tournaments.actions';
 import { TournamentsState } from './tournaments.state';
-import { CreateTournamentRequest } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -54,7 +54,9 @@ export class TournamentsFacadeService {
   }
 
   getSelectedTournament(tournamentId: string, listen: boolean = false) {
-    this.store.dispatch(new Tournaments.Get(tournamentId, listen));
+    return this.store
+      .dispatch(new Tournaments.Get(tournamentId, listen))
+      .pipe(map((state) => state.tournaments.selectedTournament));
   }
 
   getGames(listen: boolean = false) {

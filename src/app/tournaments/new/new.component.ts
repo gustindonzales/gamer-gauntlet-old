@@ -372,6 +372,7 @@ export class NewComponent {
   }
 
   submit() {
+    console.log(this.form);
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;

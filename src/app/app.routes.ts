@@ -14,33 +14,31 @@ export const routes: Routes = [
       {
         path: 'welcome',
         loadChildren: () =>
-          import('./welcome/welcome.module').then((m) => m.WelcomeModule),
+          import('./welcome/welcome.routes').then((m) => m.routes),
       },
       {
         path: 'dashboard',
         loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+          import('./dashboard/dashboard.routes').then((m) => m.routes),
       },
       {
         path: 'tournaments',
         loadChildren: () =>
-          import('./tournaments/tournaments.module').then(
-            (m) => m.TournamentsModule,
-          ),
+          import('./tournaments/tournaments.routes').then((m) => m.routes),
       },
     ],
   },
 
   // {
   //     path: 'login',
-  //     loadChildren: () => import('./login/login.module').then(m => m.LoginModule)
+  //     loadChildren: () => import('./login/login.routes').then(m => m.routes)
   // },
   // {
   //     path: 'profile',
-  //     loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
+  //     loadChildren: () => import('./profile/profile.routes').then(m => m.routes)
   // },
   // {
   //     path: 'register',
-  //     loadChildren: () => import('./register/register.module').then(m => m.RegisterModule)
+  //     loadChildren: () => import('./register/register.routes').then(m => m.routes)
   // }
 ];

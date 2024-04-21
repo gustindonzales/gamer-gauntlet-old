@@ -1,14 +1,23 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>{{
-      (tournamentFacadeService.selectedTournament$ | async)?.name
-    }}</mat-card-title>
-    <mat-card-subtitle
-      >Hosted by
-      {{
-        (tournamentFacadeService.selectedTournament$ | async)?.owner.firstName
-      }}</mat-card-subtitle
-    >
+  <mat-card-header class="flex flex-row">
+    <div class="basis-1/2">
+      <mat-card-title>{{
+        (tournamentFacadeService.selectedTournament$ | async)?.name
+      }}</mat-card-title>
+      <mat-card-subtitle
+        >Hosted by
+        {{
+          (tournamentFacadeService.selectedTournament$ | async)?.owner.firstName
+        }}</mat-card-subtitle
+      >
+    </div>
+
+    <div class="basis-1/2"></div>
+    @if (isTournamentOwner() | async) {
+      <a mat-button mat-flat-button color="primary" [routerLink]="['../admin']">
+        Admin
+      </a>
+    }
   </mat-card-header>
   <mat-card-content>
     <div class="details">
@@ -54,11 +63,5 @@
       </mat-list>
       <p *ngIf="0 === 0">No players registered yet.</p>
     </div>
-
-    @if (isTournamentOwner() | async) {
-      <a mat-button mat-flat-button color="primary" [routerLink]="['../admin']">
-        Admin
-      </a>
-    }
   </mat-card-content>
 </mat-card>

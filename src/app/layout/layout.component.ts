@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule, RouterOutlet } from '@angular/router';
-import { ConvexService } from '../services/shared/convex.service';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ConvexService } from '../shared/services/convex.service';
 import { AvatarComponent } from './components/avatar/avatar.component';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-layout',
@@ -24,7 +24,9 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class LayoutComponent {
   protected convexService: ConvexService = inject(ConvexService);
+  private router: Router = inject(Router);
   presentSignIn(): void {
-    this.convexService.openSignIn();
+    const redirectUrl = this.router.url;
+    this.convexService.openSignIn(redirectUrl);
   }
 }

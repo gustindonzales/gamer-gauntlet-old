@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { api } from '../../../../convex/_generated/api';
 import { Doc } from '../../../../convex/_generated/dataModel';
-import { ConvexService } from '../../services/shared/convex.service';
+import { ConvexService } from '../../shared/services/convex.service';
 import { TournamentService } from './tournament.service';
 
 describe('TournamentService', () => {

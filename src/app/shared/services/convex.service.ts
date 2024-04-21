@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import Clerk from '@clerk/clerk-js';
 import { UserResource } from '@clerk/types';
@@ -6,6 +7,7 @@ import { ConvexClient } from 'convex/browser';
 import {
   BehaviorSubject,
   Observable,
+  catchError,
   firstValueFrom,
   from,
   map,
@@ -16,6 +18,7 @@ import {
 import { api } from '../../../../convex/_generated/api';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { environment } from '../../../environments/environment.development';
+import { ConvexError } from 'convex/values';
 
 export interface UserContext extends Doc<'users'> {
   clerk: UserResource;
@@ -32,6 +35,7 @@ export class ConvexService {
   public isReady$ = new BehaviorSubject<boolean>(false);
   public user$ = new BehaviorSubject<UserContext | null>(null);
   private template: string = 'convex';
+  private snackBar: MatSnackBar = inject(MatSnackBar);
   constructor() {
     this.clerk = new Clerk(environment.CLERK_PUBLISHABLE_KEY);
   }
@@ -39,13 +43,26 @@ export class ConvexService {
   get<T>(func: any, args: any = {}, listen: boolean = false): Observable<T> {
     if (listen) {
       return new Observable((observer) => {
-        this.client.onUpdate(func, args, (messages) => {
-          observer.next(messages);
-        });
+        this.client.onUpdate(
+          func,
+          args,
+          (messages) => {
+            observer.next(messages);
+          },
+          (error: any) => {
+            this.onError(error);
+            return of(null);
+          },
+        );
       });
     }
 
-    return from(this.client.query(func, args));
+    return from(this.client.query(func, args)).pipe(
+      catchError((error: ConvexError<any>) => {
+        this.onError(error);
+        return of(null) as Observable<T>;
+      }),
+    );
   }
 
   insert<T, T2>(func: any, args: T): Observable<T2> {
@@ -70,7 +87,7 @@ export class ConvexService {
               async () => firstValueFrom(this.getToken()),
               (loggedIn) => {
                 if (!loggedIn) {
-                  this.signOut();
+                  //this.signOut();
                 }
 
                 resolve(true);
@@ -126,8 +143,8 @@ export class ConvexService {
     );
   }
 
-  openSignIn() {
-    this.clerk.openSignIn();
+  openSignIn(redirectUrl: string) {
+    this.clerk.openSignIn({ redirectUrl });
   }
   openSignUp() {
     this.clerk.openSignUp();
@@ -140,5 +157,15 @@ export class ConvexService {
         this.isAuthenticated$.next(false);
         this.user$.next(null);
       });
+  }
+
+  onError(error: ConvexError<any>) {
+    if (!error.data) {
+      return;
+    }
+    this.snackBar.open(error.data, undefined, {
+      panelClass: 'snackbar-error',
+      duration: 5000,
+    });
   }
 }

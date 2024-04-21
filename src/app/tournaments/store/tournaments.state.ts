@@ -107,7 +107,7 @@ export class TournamentsState {
     { listen }: TournamentTypes.Get,
   ) {
     return this.tournamentService.getTournamentTypes(listen).pipe(
-      tap((result: Doc<'tournamentTypes'>[]) => {
+      tap((result: Doc<'tournamentTypes'>[] | null) => {
         patchState({
           tournamentTypes: result,
         });
@@ -124,7 +124,7 @@ export class TournamentsState {
     { listen }: TournamentFormats.Get,
   ) {
     return this.tournamentService.getTournamentFormats(listen).pipe(
-      tap((result: Doc<'tournamentFormats'>[]) => {
+      tap((result: Doc<'tournamentFormats'>[] | null) => {
         patchState({
           tournamentFormats: result,
         });
@@ -141,7 +141,7 @@ export class TournamentsState {
     { listen }: Games.Get,
   ) {
     return this.tournamentService.getGames(listen).pipe(
-      tap((result: Doc<'games'>[]) => {
+      tap((result: Doc<'games'>[] | null) => {
         patchState({
           games: result,
         });
@@ -158,7 +158,7 @@ export class TournamentsState {
     { listen }: Platforms.Get,
   ) {
     return this.tournamentService.getPlatforms(listen).pipe(
-      tap((result: Doc<'platforms'>[]) => {
+      tap((result: Doc<'platforms'>[] | null) => {
         patchState({
           platforms: result,
         });

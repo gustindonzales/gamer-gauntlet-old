@@ -1,0 +1,23 @@
+@use "@angular/material" as mat;
+@use "@angular/material-experimental" as matx;
+@import "theme";
+
+// .snackbar-success {
+//   /* Change background color */
+//   --mdc-snackbar-container-color: --mdc-snackbar-container-color:
+//     matx.get-color-from-palette(matx.$green-palette, 500);
+
+//   /* Change button text color (optional) */
+//   --mat-mdc-snack-bar-button-color: matx.$contrast-palette(matx.$green-palette);
+// }
+
+// .snackbar-error {
+//   /* Change background color for error snackbar */
+//   --mdc-snackbar-container-color: matx.get-color-from-palette(
+//     matx.$red-palette,
+//     700
+//   );
+
+//   /* Change button text color (optional) */
+//   --mat-mdc-snack-bar-button-color: matx.$contrast-palette(mat.$red-palette);
+// }

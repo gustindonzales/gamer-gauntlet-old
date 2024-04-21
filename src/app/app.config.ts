@@ -14,7 +14,7 @@ import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 import { environment } from '../environments/environment';
 import { initializeAppFactory } from './app.initializer';
 import { routes } from './app.routes';
-import { ConvexService } from './services/shared/convex.service';
+import { ConvexService } from './shared/services/convex.service';
 import { TournamentsFacadeService } from './tournaments/store/tournaments.facade.service';
 import { TournamentsState } from './tournaments/store/tournaments.state';
 import { provideNativeDateAdapter } from '@angular/material/core';
