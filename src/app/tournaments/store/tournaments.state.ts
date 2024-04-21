@@ -1,15 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { catchError, take, tap, throwError } from 'rxjs';
+import { catchError, switchMap, take, tap, throwError } from 'rxjs';
 import { Doc } from '../../../../convex/_generated/dataModel';
 
+import { Tournament } from '../../../../convex/tournaments';
 import { SelectOption } from '../../components/form';
 import { TournamentService } from '../services/tournament.service';
 import {
   Games,
   Platforms,
-  TournamentTypes,
   TournamentFormats,
+  TournamentTypes,
   Tournaments,
 } from './tournaments.actions';
 
@@ -24,7 +25,7 @@ export interface TournamentsStateModel {
   tournamentFormats: Doc<'tournamentFormats'>[] | null;
   games: Doc<'games'>[] | null;
   platforms: Doc<'platforms'>[] | null;
-  selectedTournament: Doc<'tournaments'> | null;
+  selectedTournament: Tournament | null;
 }
 
 @State<TournamentsStateModel>({
@@ -176,9 +177,9 @@ export class TournamentsState {
   ) {
     return this.tournamentService.createTournament(tournament).pipe(
       take(1),
-      tap((tournamentId) => {
-        dispatch(new Tournaments.CreateSuccess(tournamentId));
-      }),
+      switchMap((tournamentId) =>
+        dispatch(new Tournaments.CreateSuccess(tournamentId)),
+      ),
       catchError((err) => {
         return throwError(() => new Error(err));
       }),
@@ -209,6 +210,7 @@ export class TournamentsState {
     { tournamentId, listen }: Tournaments.Get,
   ) {
     return this.tournamentService.getTournament(tournamentId, listen).pipe(
+      take(1),
       tap((selectedTournament) => {
         patchState({ selectedTournament });
       }),

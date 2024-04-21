@@ -11,13 +11,10 @@ export const get = query({
 export const getPlatformsByGameId = query({
   args: { gameId: v.id('games') },
   handler: async (ctx, args) => {
-    console.log(args);
     const gamePlatforms = await ctx.db
       .query('gamePlatforms')
       .filter((q) => q.eq(q.field('gameId'), args.gameId))
       .collect();
-    console.log(gamePlatforms);
-
     const promises = [];
     for (const gamePlatform of gamePlatforms) {
       promises.push(ctx.db.get(gamePlatform.platformId));

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, map } from 'rxjs';
+import { Observable, map, take, withLatestFrom } from 'rxjs';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { SelectOption } from '../../components/form';
 import { CreateTournamentRequest } from '../models';
@@ -56,7 +56,7 @@ export class TournamentsFacadeService {
   getSelectedTournament(tournamentId: string, listen: boolean = false) {
     return this.store
       .dispatch(new Tournaments.Get(tournamentId, listen))
-      .pipe(map((state) => state.tournaments.selectedTournament));
+      .pipe(withLatestFrom(this.selectedTournament$));
   }
 
   getGames(listen: boolean = false) {
@@ -68,6 +68,10 @@ export class TournamentsFacadeService {
   }
 
   createTournament(tournament: CreateTournamentRequest) {
-    this.store.dispatch(new Tournaments.Create(tournament));
+    return this.store.dispatch(new Tournaments.Create(tournament)).pipe(
+      take(1),
+      withLatestFrom(this.selectedTournament$),
+      map(([, tournament]) => tournament),
+    );
   }
 }

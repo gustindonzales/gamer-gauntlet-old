@@ -1,10 +1,3 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -34,7 +27,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { CKEditorModule, ChangeEvent } from '@ckeditor/ckeditor5-angular';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { Store } from '@ngxs/store';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
@@ -51,19 +47,6 @@ import { OrdinalPipe } from '../../shared/pipes/ordinal.pipe';
 import { CreateTournamentRequest } from '../models';
 import { TournamentService } from '../services/tournament.service';
 import { TournamentsFacadeService } from '../store/tournaments.facade.service';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { DomSanitizer } from '@angular/platform-browser';
-
-export const ConditionAnimation = trigger('conditionalTrigger', [
-  state('shown', style({ opacity: 1 })),
-  transition('shown => void', [
-    animate('0.5s', style({ opacity: 0, transform: 'translateY(-100%)' })),
-  ]),
-  transition('void => shown', [
-    style({ opacity: 0, transform: 'translateY(-100%)' }),
-    animate('0.5s', style({ opacity: 1, transform: 'translateY(0)' })),
-  ]),
-]);
 
 enum FeeDistributionType {
   winnerTakesAll = 'winnerTakesAll',
@@ -82,22 +65,6 @@ export function sumValidator(amount: number, msg: string): ValidatorFn {
       0,
     );
     return sum === amount ? null : { sumError: { message: msg } };
-  };
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control || !control.parent) {
-      return null;
-    }
-
-    const formArray = control.parent as FormArray;
-    const sum = formArray.controls
-      .map((control) => control.value)
-      .reduce((acc, value) => acc + value, 0);
-
-    if (sum !== amount) {
-      return { sumError: msg };
-    }
-
-    return null;
   };
 }
 
@@ -130,7 +97,6 @@ export function sumValidator(amount: number, msg: string): ValidatorFn {
   ],
   templateUrl: './new.component.html',
   styleUrl: './new.component.scss',
-  animations: [ConditionAnimation],
 })
 export class NewComponent {
   private store: Store = inject(Store);
@@ -139,6 +105,7 @@ export class NewComponent {
   );
   private tournamentService: TournamentService = inject(TournamentService);
   private sanitizer: DomSanitizer = inject(DomSanitizer);
+  private router: Router = inject(Router);
 
   public Editor = ClassicEditor;
   private gamePlatforms = signal<Doc<'platforms'>[]>([]);
@@ -236,9 +203,26 @@ export class NewComponent {
     return this.feeDetails.get('customDistribution') as FormArray;
   }
 
-  getControlValidatorErrorMessage(control: AbstractControl, error: string) {
+  getControlErrorMessage(control: AbstractControl, error: string) {
     if (control.hasError(error)) {
       return control.getError(error).message;
+    }
+    return '';
+  }
+
+  getControlFirstErrorMessage(control: AbstractControl) {
+    const errors = control.errors;
+    if (errors) {
+      return Object.values(errors)[0].message;
+    }
+    return '';
+  }
+
+  getError(controlName: string): string {
+    const errors = this.form.get(controlName)?.errors;
+    if (errors) {
+      // Return the first error message (assuming keys are error types)
+      return Object.values(errors)[0];
     }
     return '';
   }
@@ -392,6 +376,11 @@ export class NewComponent {
       maxEntries: this.form.get('maxEntries')?.value,
     };
 
-    this.tournamentsFacadeService.createTournament(body);
+    this.tournamentsFacadeService
+      .createTournament(body)
+      .pipe(take(1))
+      .subscribe((tournament) => {
+        this.router.navigate(['/tournaments', tournament._id, 'admin']);
+      });
   }
 }

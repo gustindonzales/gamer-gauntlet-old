@@ -11,9 +11,8 @@
     </mat-card-header>
     <mat-card-content>
       <div class="grid grid-cols-12 gap-xxs mt-xxs">
-        <h3 class="col-span-full">Tournament Details</h3>
-
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <h4 class="col-span-full xl:row-start-1 xl:col-span-6">Basic Info</h4>
+        <div class="col-span-full xl:row-start-2 md:col-span-6 xl:col-span-3">
           <mat-form-field class="w-full">
             <mat-label>Name</mat-label>
             <input
@@ -24,7 +23,7 @@
             />
           </mat-form-field>
         </div>
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <div class="col-span-full xl:row-start-2 md:col-span-6 xl:col-span-3">
           <mat-form-field class="w-full">
             <mat-label>Type</mat-label>
             <mat-select formControlName="type">
@@ -37,26 +36,81 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <div class="col-span-full xl:row-start-3 md:col-span-6 xl:col-span-3">
           <mat-form-field class="w-full">
-            <mat-label>Format</mat-label>
-            <mat-select
-              formControlName="format"
-              (selectionChange)="onTournamentFormatChange($event.value)"
-            >
-              @for (
-                type of tournamentsFacadeService.tournamentFormatOptions$
-                  | async;
-                track type
-              ) {
-                <mat-option [value]="type.value">{{ type.label }}</mat-option>
-              }
-            </mat-select>
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="datePicker"
+              formControlName="startDate"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="datePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
           </mat-form-field>
         </div>
 
+        <div class="col-span-full xl:row-start-3 md:col-span-6 xl:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Start Time</mat-label>
+            <input
+              matInput
+              [ngxMatTimepicker]="timePicker"
+              color="primary"
+              formControlName="startTime"
+            />
+
+            <ngx-mat-timepicker #timePicker></ngx-mat-timepicker>
+          </mat-form-field>
+        </div>
+
+        <h4 class="col-span-full xl:row-start-1 xl:col-start-7 xl:col-span-6">
+          Tournament Description
+        </h4>
+        <div
+          class="col-span-full xl:row-start-2 xl:col-start-7 row-span-2 xl:col-span-6"
+        >
+          <ckeditor
+            [editor]="Editor"
+            (change)="onDescriptionChange($event)"
+          ></ckeditor>
+
+          <!-- <mat-form-field class="w-full">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              placeholder="Tournament Description"
+              formControlName="description"
+              rows="6"
+            ></textarea>
+          </mat-form-field> -->
+        </div>
+
+        <h4 class="col-span-full xl:row-start-4 xl:col-span-6">Format</h4>
+        <div class="col-span-full xl:row-start-5 md:col-span-6 xl:col-span-3">
+          <!-- <mat-label>Format</mat-label> -->
+          <mat-radio-group
+            class="flex flex-col md:flex-row my-bl-2 items-start"
+            formControlName="format"
+            (change)="onTournamentFormatChange($event.value)"
+          >
+            @for (
+              format of tournamentsFacadeService.tournamentFormatOptions$
+                | async;
+              track format
+            ) {
+              <mat-radio-button class="m-bl-1" [value]="format.value">{{
+                format.label
+              }}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+
         @if (formatCodeSignal() === "team") {
-          <div class="col-span-full md:col-span-6 xl:col-span-3">
+          <div class="col-span-full xl:row-start-5 md:col-span-6 xl:col-span-3">
             <mat-form-field class="w-full">
               <mat-label>Team Size</mat-label>
               <input
@@ -73,7 +127,9 @@
           </div>
         }
 
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <div
+          class="col-span-full md:row-start-9 xl:row-start-6 md:col-span-6 xl:col-span-3"
+        >
           <mat-form-field class="w-full">
             <mat-label
               >Max
@@ -93,7 +149,9 @@
             />
           </mat-form-field>
         </div>
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <div
+          class="col-span-full md:row-start-9 xl:row-start-6 md:col-span-6 xl:col-span-3"
+        >
           <mat-form-field class="w-full">
             <mat-label
               >Min
@@ -114,59 +172,9 @@
           </mat-form-field>
         </div>
 
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
-          <mat-form-field class="w-full">
-            <mat-label>Start Date</mat-label>
-            <input
-              matInput
-              [matDatepicker]="datePicker"
-              formControlName="startDate"
-            />
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="datePicker"
-            ></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
-          </mat-form-field>
-        </div>
+        <h3 class="col-span-full xl:row-start-7 xl:col-span-6">Game Details</h3>
 
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
-          <mat-form-field class="w-full">
-            <mat-label>Start Time</mat-label>
-            <input
-              matInput
-              [ngxMatTimepicker]="timePicker"
-              color="primary"
-              formControlName="startTime"
-            />
-
-            <ngx-mat-timepicker #timePicker></ngx-mat-timepicker>
-          </mat-form-field>
-        </div>
-
-        <h3 class="col-span-full">Tournament Description</h3>
-        <div class="col-span-full 2xl:col-span-6">
-          <ckeditor
-            [editor]="Editor"
-            (change)="onDescriptionChange($event)"
-            class="h-48"
-          ></ckeditor>
-
-          <!-- <mat-form-field class="w-full">
-            <mat-label>Description</mat-label>
-            <textarea
-              matInput
-              placeholder="Tournament Description"
-              formControlName="description"
-              rows="6"
-            ></textarea>
-          </mat-form-field> -->
-        </div>
-
-        <h3 class="col-span-full">Game Details</h3>
-
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <div class="col-span-full xl:row-start-8 md:col-span-6 xl:col-span-3">
           <mat-form-field class="w-full">
             <mat-label>Game</mat-label>
             <mat-select
@@ -182,7 +190,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-span-full md:col-span-6 xl:col-span-3">
+        <div class="col-span-full xl:row-start-8 md:col-span-6 xl:col-span-3">
           <mat-form-field class="w-full">
             <mat-label>Platforms</mat-label>
             <mat-select formControlName="platforms" multiple>
@@ -195,9 +203,13 @@
           </mat-form-field>
         </div>
 
-        <h3 class="col-span-full">Payment Details</h3>
+        <h3 class="col-span-full xl:row-start-4 xl:col-start-7">
+          Payment Details
+        </h3>
 
-        <mat-accordion class="col-span-full">
+        <mat-accordion
+          class="col-span-full xl:row-start-5 xl:col-start-7 row-span-5"
+        >
           <mat-expansion-panel
             class="mat-elevation-z0 remove-mat-expansion-panel-padding"
             (opened)="onPaidTournamentExpansionToggle(true)"
@@ -214,8 +226,8 @@
             </mat-expansion-panel-header>
 
             <div class="grid grid-cols-12 gap-xxs">
-              <div class="col-span-full md:col-span-6 xl:col-span-3">
-                <mat-form-field floatLabel="always" class="w-full">
+              <div class="col-span-full md:col-span-6 xl:col-span-6">
+                <mat-form-field floatLabel="always" class="w-full mt-[2.5rem]">
                   <mat-label>Entry Fee</mat-label>
                   <input
                     matInput
@@ -257,7 +269,7 @@
                     rankControl of customDistribution.controls;
                     track rankControl
                   ) {
-                    <div class="col-span-full md:col-span-6 xl:col-span-3">
+                    <div class="col-span-full md:col-span-6 xl:col-span-4">
                       <mat-form-field class="w-full" appearance="fill">
                         <mat-label
                           >{{ $index + 1 | ordinal }} Place (%)</mat-label
@@ -292,15 +304,13 @@
                 >
                   <mat-icon>add</mat-icon>
                 </button>
+
                 @if (
                   customDistribution.touched &&
-                  customDistribution.hasError("sumError")
+                  getControlFirstErrorMessage(customDistribution)
                 ) {
                   <mat-error>{{
-                    getControlValidatorErrorMessage(
-                      customDistribution,
-                      "sumError"
-                    )
+                    getControlFirstErrorMessage(customDistribution)
                   }}</mat-error>
                 }
               </div>
