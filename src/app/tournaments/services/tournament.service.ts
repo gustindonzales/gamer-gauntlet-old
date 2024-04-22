@@ -25,6 +25,14 @@ export class TournamentService {
   convexService: ConvexService = inject(ConvexService);
   constructor() {}
 
+  getAppDependencies(listen: boolean = false): Observable<any> {
+    return this.convexService.get(
+      api['tournaments'].getTournamentDependencies,
+      {},
+      listen,
+    );
+  }
+
   getTournamentTypes(
     listen: boolean = false,
   ): Observable<Doc<'tournamentTypes'>[] | null> {
@@ -35,6 +43,12 @@ export class TournamentService {
     listen: boolean = false,
   ): Observable<Doc<'tournamentFormats'>[] | null> {
     return this.convexService.get(api['tournamentFormats'].get, {}, listen);
+  }
+
+  getTournamentStages(
+    listen: boolean = false,
+  ): Observable<Doc<'tournamentStages'>[] | null> {
+    return this.convexService.get(api['tournamentStages'].get, {}, listen);
   }
 
   getGames(listen: boolean = false): Observable<Doc<'games'>[]> {

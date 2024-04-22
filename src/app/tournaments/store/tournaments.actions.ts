@@ -14,6 +14,13 @@ export namespace TournamentFormats {
   }
 }
 
+export namespace TournamentStages {
+  export class Get {
+    static readonly type = '[TournamentStages] Get';
+    constructor(public listen: boolean = false) {}
+  }
+}
+
 export namespace Games {
   export class Get {
     static readonly type = '[Games] Get';
@@ -29,6 +36,11 @@ export namespace Platforms {
 }
 
 export namespace Tournaments {
+  export class Startup {
+    static readonly type = '[Tournaments] Startup';
+    constructor(public listen: boolean = false) {}
+  }
+
   export class Create {
     static readonly type = '[Tournaments] Create';
     constructor(public tournament: CreateTournamentRequest) {}

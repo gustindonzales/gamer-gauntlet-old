@@ -5,13 +5,10 @@ import { TournamentsFacadeService } from './tournaments/store/tournaments.facade
 export function initializeAppFactory(
   convexService: ConvexService,
   tournamentsFacadeService: TournamentsFacadeService,
-): () => Observable<[UserContext | null, void, void, void, void]> {
+): () => Observable<[UserContext | null, void]> {
   return () =>
     combineLatest([
       convexService.initClerk(),
-      of(tournamentsFacadeService.getTournamentTypes(false)),
-      of(tournamentsFacadeService.getTournamentFormats(false)),
-      of(tournamentsFacadeService.getGames(false)),
-      of(tournamentsFacadeService.getPlatforms(false)),
+      of(tournamentsFacadeService.startup(false)),
     ]);
 }

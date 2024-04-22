@@ -8,6 +8,7 @@ import {
   Games,
   Platforms,
   TournamentFormats,
+  TournamentStages,
   TournamentTypes,
   Tournaments,
 } from './tournaments.actions';
@@ -45,12 +46,20 @@ export class TournamentsFacadeService {
   platformOptions$!: Observable<SelectOption[]>;
 
   // Dispatchers
+  startup(listen: boolean = false) {
+    this.store.dispatch(new Tournaments.Startup(listen));
+  }
+
   getTournamentTypes(listen: boolean = false) {
     this.store.dispatch(new TournamentTypes.Get(listen));
   }
 
   getTournamentFormats(listen: boolean = false) {
     this.store.dispatch(new TournamentFormats.Get(listen));
+  }
+
+  getTournamentStages(listen: boolean = false) {
+    this.store.dispatch(new TournamentStages.Get(listen));
   }
 
   getSelectedTournament(tournamentId: string, listen: boolean = false) {

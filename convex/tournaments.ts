@@ -14,6 +14,20 @@ export interface Tournament extends Doc<'tournaments'> {
   platforms: Doc<'platforms'>[];
 }
 
+export const getTournamentDependencies = query({
+  args: {},
+  handler: async (ctx) => {
+    const results = await Promise.all([
+      ctx.db.query('tournamentTypes').collect(),
+      ctx.db.query('tournamentFormats').collect(),
+      ctx.db.query('tournamentStages').collect(),
+      ctx.db.query('games').collect(),
+      ctx.db.query('platforms').collect(),
+    ]);
+    return results;
+  },
+});
+
 export const getById = query({
   args: { tournamentId: v.id('tournaments') },
   handler: async (ctx, args) => {

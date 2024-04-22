@@ -10,6 +10,7 @@ import {
   Games,
   Platforms,
   TournamentFormats,
+  TournamentStages,
   TournamentTypes,
   Tournaments,
 } from './tournaments.actions';
@@ -23,6 +24,7 @@ export interface TournamentsStateModel {
   };
   tournamentTypes: Doc<'tournamentTypes'>[] | null;
   tournamentFormats: Doc<'tournamentFormats'>[] | null;
+  tournamentStages: Doc<'tournamentStages'>[] | null;
   games: Doc<'games'>[] | null;
   platforms: Doc<'platforms'>[] | null;
   selectedTournament: Tournament | null;
@@ -39,6 +41,7 @@ export interface TournamentsStateModel {
     },
     tournamentTypes: null,
     tournamentFormats: null,
+    tournamentStages: null,
     games: null,
     platforms: null,
     selectedTournament: null,
@@ -136,6 +139,23 @@ export class TournamentsState {
     );
   }
 
+  @Action(TournamentStages.Get)
+  getTournamentStages(
+    { patchState }: StateContext<TournamentsStateModel>,
+    { listen }: TournamentStages.Get,
+  ) {
+    return this.tournamentService.getTournamentStages(listen).pipe(
+      tap((result: Doc<'tournamentStages'>[] | null) => {
+        patchState({
+          tournamentStages: result,
+        });
+      }),
+      catchError((err) => {
+        return throwError(() => new Error(err));
+      }),
+    );
+  }
+
   @Action(Games.Get)
   getGames(
     { patchState }: StateContext<TournamentsStateModel>,
@@ -213,6 +233,35 @@ export class TournamentsState {
       take(1),
       tap((selectedTournament) => {
         patchState({ selectedTournament });
+      }),
+      catchError((err) => {
+        return throwError(() => new Error(err));
+      }),
+    );
+  }
+
+  @Action(Tournaments.Startup)
+  startup(
+    { patchState }: StateContext<TournamentsStateModel>,
+    { listen }: Tournaments.Startup,
+  ) {
+    return this.tournamentService.getAppDependencies(listen).pipe(
+      take(1),
+      tap((deps) => {
+        const [
+          tournamentTypes,
+          tournamentFormats,
+          tournamentStages,
+          games,
+          platforms,
+        ] = deps;
+        patchState({
+          tournamentTypes,
+          tournamentFormats,
+          tournamentStages,
+          games,
+          platforms,
+        });
       }),
       catchError((err) => {
         return throwError(() => new Error(err));

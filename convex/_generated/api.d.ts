@@ -18,6 +18,7 @@ import type * as games from "../games.js";
 import type * as platforms from "../platforms.js";
 import type * as tournamentFormats from "../tournamentFormats.js";
 import type * as tournaments from "../tournaments.js";
+import type * as tournamentStages from "../tournamentStages.js";
 import type * as tournamentTypes from "../tournamentTypes.js";
 import type * as users from "../users.js";
 
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   platforms: typeof platforms;
   tournamentFormats: typeof tournamentFormats;
   tournaments: typeof tournaments;
+  tournamentStages: typeof tournamentStages;
   tournamentTypes: typeof tournamentTypes;
   users: typeof users;
 }>;

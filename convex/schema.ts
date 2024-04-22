@@ -22,6 +22,11 @@ export default defineSchema({
     description: v.string(),
     code: v.string(),
   }),
+  tournamentStages: defineTable({
+    name: v.string(),
+    description: v.string(),
+    code: v.string(),
+  }),
   tournaments: defineTable({
     ownerId: v.id('users'),
     name: v.string(),
